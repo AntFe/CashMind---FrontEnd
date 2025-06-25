@@ -64,6 +64,11 @@ form button {
     width: 100%;
 }
 
+input:focus{
+    outline: none;
+    border-color: #00FFE1;
+}
+
 
 input {
     width: 100%;

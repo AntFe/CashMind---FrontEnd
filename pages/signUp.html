@@ -6,25 +6,28 @@
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap" rel="stylesheet">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="styles/style.css">
-    <title>Cashmind - Seu gerenciador pessoal com IA</title>
+    <link rel="stylesheet" href="/styles/style.css">
+    <title>Cashmind - Cadastre-se</title>
 </head>
 <body>
 
-
     <div class="login-container">
-        <img src="content/logoSVG.svg" alt="logo" srcset="">
-
-        <b class="textSimple" >Seja bem vindo!</b>
+        <img src="/content/logoSVG.svg" alt="logo" srcset="">
+        
+        <b class="textSimple" >Faça seu cadastro</b>
         <form action="" class="textSimple" id="loginForm">
+            <label for="username">Nome completo</label>
+            <input type="text" id="usernameInput">
             <label for="nome">Email</label>
             <input type="text" id="nameInput">
             <label for="passw">Senha</label>
             <input type="password" id="passwInput">
-            <button type="submit" class="textSimple basicBtn">Entrar</button>
+            <label for="passwConf">Confirme sua senha</label>
+            <input type="password" id="passwConfirm">
+            <button type="submit" class="textSimple basicBtn">Criar conta</button>
         </form>
     
-        <span class="textSimple">Ainda não possui uma conta? <a href="pages/signUp.html" class="textSimple basicLink">Cadastre-se</a></span>
+        <span class="textSimple">Já possui uma conta? <a href="/index.html" class="textSimple basicLink">Faça login</a></span>
             
     </div>
     
