@@ -87,6 +87,8 @@ document.getElementById("signupForm").addEventListener("submit", function (e) {
         passwordError.textContent = senhaErro;
         passwordError.style.display = 'block';
         isValid = false;
+    }else{
+        alert("Senha válida");
     }
 
 
