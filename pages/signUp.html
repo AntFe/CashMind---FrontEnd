@@ -15,16 +15,20 @@
         <img src="/content/logoSVG.svg" alt="logo" srcset="">
         
         <b class="textSimple" >Faça seu cadastro</b>
-        <form action="" class="textSimple" id="loginForm">
+        <form action="" class="textSimple" id="signupForm">
             <label for="username">Nome completo</label>
             <input type="text" id="usernameInput">
+            <span class="error" id="usernameError">Por favor, preencha o nome de usuário</span>
             <label for="nome">Email</label>
             <input type="text" id="nameInput">
+            <span class="error" id="emailError">Por favor digite seu email</span>
             <label for="passw">Senha</label>
             <input type="password" id="passwInput">
+            <span class="error" id="passwordError">Por favor digite sua senha</span>
             <label for="passwConf">Confirme sua senha</label>
             <input type="password" id="passwConfirm">
-            <button type="submit" class="textSimple basicBtn">Criar conta</button>
+            <span class="error" id="confirmPasswError">As senhas não coincidem</span>
+            <button type="submit" class="textSimple basicBtn" onclick="validarFormulario">Criar conta</button>
         </form>
     
         <span class="textSimple">Já possui uma conta? <a href="/index.html" class="textSimple basicLink">Faça login</a></span>
@@ -32,5 +36,5 @@
     </div>
     
 </body>
-<script src="scripts/engine.js"></script>
+<script src="/scripts/signupEngine.js"></script>
 </html>             
