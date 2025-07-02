@@ -42,6 +42,7 @@ document.getElementById("signupForm").addEventListener("submit", function (e) {
 
     // Validar nome completo
     if (!username) {
+        document.getElementById('usernameError').innerHTML = "Nome de usuário não disponível";
         document.getElementById('usernameError').style.display = 'block';
         isValid = false;
     }
@@ -49,6 +50,7 @@ document.getElementById("signupForm").addEventListener("submit", function (e) {
     // Validar e-mail
     const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!email || !emailPattern.test(email)) {
+        document.getElementById('emailError').innerHTML = "Insira um email válido";
         document.getElementById('emailError').style.display = 'block';
         isValid = false;
     }
@@ -88,7 +90,7 @@ document.getElementById("signupForm").addEventListener("submit", function (e) {
         passwordError.style.display = 'block';
         isValid = false;
     }else{
-        alert("Senha válida");
+        console.log("Senha Valida");
     }
 
 

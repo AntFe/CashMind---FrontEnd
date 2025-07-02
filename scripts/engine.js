@@ -15,14 +15,22 @@
   // Manipula o envio do formulário
   document.getElementById('loginForm').addEventListener('submit', async (event) => {
     event.preventDefault();
-
-    const email = document.getElementById('email').value;
-    const password = document.getElementById('password').value;
+    
+    const email = document.getElementById('nameInput').value;
+    const password = document.getElementById('passwInput').value;
+    
+    const errorHandler = document.getElementById('submitError');
+  
+    if(!email || !password){
+      errorHandler.innerHTML = "Preencha os campos corretamente";
+      errorHandler.style.display = "block";
+      return;
+    }
 
     try {
       // Comente a linha abaixo se quiser enviar a senha em texto puro
-        //   const hashedPassword = await generateSHA256Hash(password);
-
+      //   const hashedPassword = await generateSHA256Hash(password);
+      
       // Dados para enviar ao backend
       const data = {
         email: email,
@@ -57,12 +65,10 @@
       // (Descomentar) redireciona para outra página
       // window.location.href = '/dashboard';
     } catch (error) {
-      
       // retirar em Release
         console.error('Erro ao fazer login:', error);
-
-
-      alert('Falha no login. Email ou senha estão incorretos.');
+        errorHandler.innerHTML = "Login e senha estão incorretos";
+        
     }
   });
 
