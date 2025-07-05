@@ -11,9 +11,14 @@ class Config:
     # Configurações do Flask
     SECRET_KEY = os.environ.get('SECRET_KEY') or 'dev-secret-key-mudar-em-producao'
     
-    # Configurações do banco de dados
-    SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or \
-        'sqlite:///cashmind.db'
+    # Configurações do banco de dados - CORREÇÃO DEFINITIVA
+    # Se DATABASE_URL estiver no .env, usa ela. Senão, usa caminho relativo
+    if os.environ.get('DATABASE_URL'):
+        SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL')
+    else:
+        # Caminho relativo para funcionar em qualquer máquina
+        SQLALCHEMY_DATABASE_URI = 'sqlite:///instance/cashmind.db'
+    
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     
     # Configurações JWT
