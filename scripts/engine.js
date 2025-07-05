@@ -12,92 +12,154 @@
 //     return hashHex;
 //   }
 
-  // Manipula o envio do formulário
-  document.getElementById('loginForm').addEventListener('submit', async (event) => {
-    event.preventDefault();
-    
-    const email = document.getElementById('nameInput').value;
-    const password = document.getElementById('passwInput').value;
-    
-    const errorHandler = document.getElementById('submitError');
-  
-    if(!email || !password){
-      errorHandler.innerHTML = "Preencha os campos corretamente";
-      errorHandler.style.display = "block";
-      return;
-    }
+// Configuração da API
+const API_BASE_URL = 'http://localhost:5000/api';
 
-    try {
-      // Comente a linha abaixo se quiser enviar a senha em texto puro
-      //   const hashedPassword = await generateSHA256Hash(password);
-      
-      // Dados para enviar ao backend
-      const data = {
+// Manipula o envio do formulário de login
+document.getElementById('loginForm').addEventListener('submit', async (event) => {
+  event.preventDefault();
+  
+  const email = document.getElementById('nameInput').value;
+  const password = document.getElementById('passwInput').value;
+  
+  const errorHandler = document.getElementById('submitError');
+  errorHandler.style.display = "none";
+
+  if (!email || !password) {
+    errorHandler.innerHTML = "Preencha todos os campos";
+    errorHandler.style.display = "block";
+    return;
+  }
+
+  try {
+    // Mostra loading (opcional)
+    const submitButton = event.target.querySelector('button[type="submit"]');
+    const originalText = submitButton.textContent;
+    submitButton.textContent = 'Entrando...';
+    submitButton.disabled = true;
+
+    // Envia os dados para o backend
+    const response = await fetch(`${API_BASE_URL}/auth/login`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
         email: email,
         password: password
-      };
+      })
+    });
 
-      // Envia os dados para o backend
-      const response = await fetch('https://seu-backend.com/api/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(data)
-      });
+    const result = await response.json();
 
-      if (!response.ok) {
-        throw new Error('Erro na autenticação');
-      }
-
-      const result = await response.json();
-      const token = result.token; // Assume que o backend retorna o JWT
-
-      // Armazena o JWT no localStorage (use HttpOnly cookies em produção)
-      localStorage.setItem('jwt', token);
-
-     // retirar essa linha em Release
-      console.log('Login bem-sucedido! JWT:', token);
-
-      // Limpa o formulário
-      document.getElementById('loginForm').reset();
-
-      // (Descomentar) redireciona para outra página
-      // window.location.href = '/dashboard';
-    } catch (error) {
-      // retirar em Release
-        console.error('Erro ao fazer login:', error);
-        errorHandler.innerHTML = "Login e senha estão incorretos";
-        
-    }
-  });
-
-  // Função para fazer requisições autenticadas
-  async function makeAuthenticatedRequest() {
-    const token = localStorage.getItem('jwt');
-    if (!token) {
-      console.error('Nenhum token encontrado');
-    //   window.location.href = '/login'
-      return;
+    if (!response.ok) {
+      throw new Error(result.error || 'Erro na autenticação');
     }
 
-    try {
-      const response = await fetch('https://seu-backend.com/api/protected', {
-        method: 'GET',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        }
-      });
+    // Armazena os tokens
+    localStorage.setItem('access_token', result.access_token);
+    localStorage.setItem('refresh_token', result.refresh_token);
+    localStorage.setItem('user', JSON.stringify(result.user));
 
-      if (!response.ok) {
-        throw new Error('Acesso não autorizado, Faça login para continuar');
-      }
+    console.log('Login bem-sucedido!');
 
-      /// Retirar em release
-      const data = await response.json();
-      console.log('Dados protegidos:', data);
-    } catch (error) {
-      console.error('Erro na requisição:', error);
-    }
+    // Limpa o formulário
+    document.getElementById('loginForm').reset();
+
+    // Redireciona para o dashboard (quando existir)
+    alert('Login realizado com sucesso! Dashboard em desenvolvimento...');
+    // window.location.href = '/dashboard.html';
+
+  } catch (error) {
+    console.error('Erro ao fazer login:', error);
+    errorHandler.innerHTML = error.message || "Email ou senha incorretos";
+    errorHandler.style.display = "block";
+  } finally {
+    // Restaura botão
+    const submitButton = event.target.querySelector('button[type="submit"]');
+    submitButton.textContent = 'Entrar';
+    submitButton.disabled = false;
   }
+});
+
+// Função para fazer requisições autenticadas
+async function makeAuthenticatedRequest(endpoint, options = {}) {
+  const token = localStorage.getItem('access_token');
+  
+  if (!token) {
+    console.error('Nenhum token encontrado');
+    window.location.href = '/index.html';
+    return;
+  }
+
+  try {
+    const response = await fetch(`${API_BASE_URL}${endpoint}`, {
+      ...options,
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+        ...options.headers
+      }
+    });
+
+    if (response.status === 401) {
+      // Token expirado, tentar renovar
+      const refreshed = await refreshToken();
+      if (refreshed) {
+        // Tentar novamente com novo token
+        return makeAuthenticatedRequest(endpoint, options);
+      } else {
+        // Falha ao renovar, fazer logout
+        logout();
+        return;
+      }
+    }
+
+    if (!response.ok) {
+      throw new Error('Erro na requisição');
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error('Erro na requisição:', error);
+    throw error;
+  }
+}
+
+// Função para renovar token
+async function refreshToken() {
+  const refresh_token = localStorage.getItem('refresh_token');
+  
+  if (!refresh_token) {
+    return false;
+  }
+
+  try {
+    const response = await fetch(`${API_BASE_URL}/auth/refresh`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${refresh_token}`,
+        'Content-Type': 'application/json'
+      }
+    });
+
+    if (!response.ok) {
+      return false;
+    }
+
+    const result = await response.json();
+    localStorage.setItem('access_token', result.access_token);
+    return true;
+  } catch (error) {
+    console.error('Erro ao renovar token:', error);
+    return false;
+  }
+}
+
+// Função de logout
+function logout() {
+  localStorage.removeItem('access_token');
+  localStorage.removeItem('refresh_token');
+  localStorage.removeItem('user');
+  window.location.href = '/index.html';
+}
