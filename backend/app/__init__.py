@@ -11,15 +11,23 @@ jwt = JWTManager()
 def create_app(config_name='default'):
     """Factory pattern para criar a aplicação Flask"""
     
-    # Cria a aplicação Flask
-    app = Flask(__name__)
+    # Cria a aplicação Flask com instance_relative_config
+    app = Flask(__name__, instance_relative_config=True)
     
-    # Garante que a pasta instance existe
+    # Garante que a pasta instance existe no lugar certo
     import os
-    os.makedirs('instance', exist_ok=True)
+    try:
+        os.makedirs(app.instance_path, exist_ok=True)
+    except OSError:
+        pass
     
     # Carrega configurações
     app.config.from_object(config[config_name])
+    
+    # Se estiver usando caminho relativo, ajusta para o instance_path
+    if 'sqlite:///' in app.config['SQLALCHEMY_DATABASE_URI']:
+        db_path = app.config['SQLALCHEMY_DATABASE_URI'].replace('sqlite:///', '')
+        app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{os.path.join(app.instance_path, "cashmind.db")}'
     
     # Inicializa extensões com a app
     db.init_app(app)
