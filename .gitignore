@@ -12,3 +12,5 @@ backend/app/*/__pycache__/
 .Python
 *.db
 *.backup
+*.db
+backend/instance/
