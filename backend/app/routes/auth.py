@@ -15,8 +15,8 @@ def validate_password(password):
     """Valida a senha conforme as regras do frontend"""
     errors = []
     
-    if len(password) < 8:
-        errors.append("Senha deve ter no mínimo 8 caracteres")
+    # if len(password) < 8:
+    #     errors.append("Senha deve ter no mínimo 8 caracteres")
     
     if not re.search(r'[A-Z]', password):
         errors.append("Senha deve conter pelo menos uma letra maiúscula")
@@ -28,11 +28,11 @@ def validate_password(password):
         errors.append("Senha deve conter pelo menos um número")
     
     # Verifica números sequenciais
-    numbers = re.findall(r'\d', password)
-    for i in range(len(numbers) - 1):
-        if int(numbers[i+1]) == int(numbers[i]) + 1:
-            errors.append("Senha não pode conter números sequenciais")
-            break
+    # numbers = re.findall(r'\d', password)
+    # for i in range(len(numbers) - 1):
+    #     if int(numbers[i+1]) == int(numbers[i]) + 1:
+    #         errors.append("Senha não pode conter números sequenciais")
+    #         break
     
     return errors
 
@@ -77,8 +77,8 @@ def register():
         db.session.commit()
         
         # Cria tokens JWT
-        access_token = create_access_token(identity=new_user.id)
-        refresh_token = create_refresh_token(identity=new_user.id)
+        access_token = create_access_token(identity=str(new_user.id))
+        refresh_token = create_refresh_token(identity=str(new_user.id))
         
         return jsonify({
             'message': 'Usuário criado com sucesso',
@@ -119,8 +119,8 @@ def login():
             return jsonify({'error': 'Usuário desativado'}), 403
         
         # Cria tokens JWT
-        access_token = create_access_token(identity=user.id)
-        refresh_token = create_refresh_token(identity=user.id)
+        access_token = create_access_token(identity=str(user.id))
+        refresh_token = create_refresh_token(identity=str(user.id))
         
         return jsonify({
             'message': 'Login realizado com sucesso',
@@ -137,7 +137,7 @@ def login():
 def refresh():
     """Endpoint para renovar o token de acesso"""
     try:
-        current_user_id = get_jwt_identity()
+        current_user_id = str(get_jwt_identity())
         new_access_token = create_access_token(identity=current_user_id)
         
         return jsonify({
