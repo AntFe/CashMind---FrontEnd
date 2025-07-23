@@ -66,9 +66,8 @@ document.getElementById('loginForm').addEventListener('submit', async (event) =>
     // Limpa o formulário
     document.getElementById('loginForm').reset();
 
-    // Redireciona para o dashboard (quando existir)
-    alert('Login realizado com sucesso! Dashboard em desenvolvimento...');
-    // window.location.href = '/dashboard.html';
+    // Redireciona para o dashboard
+    window.location.href = '../pages/dashboard.html';
 
   } catch (error) {
     console.error('Erro ao fazer login:', error);
