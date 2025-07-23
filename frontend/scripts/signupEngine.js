@@ -14,19 +14,19 @@ function senhaTemNumero(senha) {
     return /\d/.test(senha);
 }
 
-function senhaTemNumerosSequenciais(senha) {
-    const numeros = senha.match(/\d/g);
-    if (!numeros || numeros.length < 2) return false;
-
-    for (let i = 0; i < numeros.length - 1; i++) {
-        let atual = parseInt(numeros[i]);
-        let proximo = parseInt(numeros[i + 1]);
-        if (proximo === atual + 1) {
-            return true;
-        }
-    }
-    return false;
-}
+// function senhaTemNumerosSequenciais(senha) {
+//     const numeros = senha.match(/\d/g);
+//     if (!numeros || numeros.length < 2) return false;
+//
+//     for (let i = 0; i < numeros.length - 1; i++) {
+//         let atual = parseInt(numeros[i]);
+//         let proximo = parseInt(numeros[i + 1]);
+//         if (proximo === atual + 1) {
+//             return true;
+//         }
+//     }
+//     return false;
+// }
 
 document.getElementById("signupForm").addEventListener("submit", async function (e) {
     e.preventDefault();
@@ -65,9 +65,9 @@ document.getElementById("signupForm").addEventListener("submit", async function 
         !password ||
         !senhaTemLetraMaiuscula(password) ||
         !senhaTemCaractereEspecial(password) ||
-        !senhaTemNumero(password) ||
-        senhaTemNumerosSequenciais(password) || 
-        (password.length < 8)
+        !senhaTemNumero(password)
+        // senhaTemNumerosSequenciais(password) || 
+        // (password.length < 8)
     ) {
         switch (true) {
             case !password:
@@ -82,12 +82,12 @@ document.getElementById("signupForm").addEventListener("submit", async function 
             case !senhaTemNumero(password):
                 senhaErro = "Sua senha deve conter um ou mais números";
                 break;
-            case senhaTemNumerosSequenciais(password):
-                senhaErro = "Sua senha não deve conter números sequenciais";
-                break;
-            case (password.length < 8):
-                senhaErro = "Sua senha deve ter um tamanho mínimo de 8";
-                break;
+            // case senhaTemNumerosSequenciais(password):
+            //     senhaErro = "Sua senha não deve conter números sequenciais";
+            //     break;
+            // case (password.length < 8):
+            //    senhaErro = "Sua senha deve ter um tamanho mínimo de 8";
+            //    break;
             default:
                 senhaErro = "Senha inválida";
                 break;
