@@ -43,11 +43,12 @@ def create_app(config_name='default'):
     })
     
     # Importa e registra blueprints
-    from app.routes import auth, transactions, dashboard
-    
+    from app.routes import auth, transactions, dashboard, ai_analysis
+
     app.register_blueprint(auth.bp, url_prefix='/api/auth')
     app.register_blueprint(transactions.bp, url_prefix='/api/transactions')
     app.register_blueprint(dashboard.bp, url_prefix='/api/dashboard')
+    app.register_blueprint(ai_analysis.bp, url_prefix='/api/ai')
     
     # Cria as tabelas do banco de dados
     with app.app_context():
