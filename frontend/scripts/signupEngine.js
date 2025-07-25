@@ -1,7 +1,6 @@
-// Configuração da API
-const API_BASE_URL = 'http://localhost:5000/api';
+// Nota: API_BASE_URL já está definido em auth.js
 
-// Funções de validação (mantidas do código original)
+// Funções de validação
 function senhaTemLetraMaiuscula(senha) {
     return /[A-Z]/.test(senha);
 }
@@ -13,20 +12,6 @@ function senhaTemCaractereEspecial(senha) {
 function senhaTemNumero(senha) {
     return /\d/.test(senha);
 }
-
-// function senhaTemNumerosSequenciais(senha) {
-//     const numeros = senha.match(/\d/g);
-//     if (!numeros || numeros.length < 2) return false;
-//
-//     for (let i = 0; i < numeros.length - 1; i++) {
-//         let atual = parseInt(numeros[i]);
-//         let proximo = parseInt(numeros[i + 1]);
-//         if (proximo === atual + 1) {
-//             return true;
-//         }
-//     }
-//     return false;
-// }
 
 document.getElementById("signupForm").addEventListener("submit", async function (e) {
     e.preventDefault();
@@ -63,15 +48,17 @@ document.getElementById("signupForm").addEventListener("submit", async function 
     // Validar senha
     if (
         !password ||
+        password.length < 8 ||
         !senhaTemLetraMaiuscula(password) ||
         !senhaTemCaractereEspecial(password) ||
         !senhaTemNumero(password)
-        // senhaTemNumerosSequenciais(password) || 
-        // (password.length < 8)
     ) {
         switch (true) {
             case !password:
                 senhaErro = "Por favor digite sua senha";
+                break;
+            case password.length < 8:
+                senhaErro = "Sua senha deve ter no mínimo 8 caracteres";
                 break;
             case !senhaTemLetraMaiuscula(password):
                 senhaErro = "Sua senha deve conter no mínimo uma letra maiúscula";
@@ -82,12 +69,6 @@ document.getElementById("signupForm").addEventListener("submit", async function 
             case !senhaTemNumero(password):
                 senhaErro = "Sua senha deve conter um ou mais números";
                 break;
-            // case senhaTemNumerosSequenciais(password):
-            //     senhaErro = "Sua senha não deve conter números sequenciais";
-            //     break;
-            // case (password.length < 8):
-            //    senhaErro = "Sua senha deve ter um tamanho mínimo de 8";
-            //    break;
             default:
                 senhaErro = "Senha inválida";
                 break;
@@ -144,10 +125,10 @@ document.getElementById("signupForm").addEventListener("submit", async function 
             document.getElementById('signupForm').reset();
 
             // Mostra mensagem de sucesso e redireciona
-            alert('Conta criada com sucesso! Você será redirecionado para o login.');
-            setTimeout(() => {
-                window.location.href = '/index.html';
-            }, 2000);
+            alert('Conta criada com sucesso! Você será redirecionado para o dashboard.');
+            
+            // Redireciona direto para o dashboard
+            window.location.href = 'dashboard.html';
 
         } catch (error) {
             console.error('Erro ao criar conta:', error);

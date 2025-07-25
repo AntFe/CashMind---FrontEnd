@@ -1,4 +1,5 @@
-// Funções compartilhadas de autenticação
+// Configuração da API
+const API_BASE_URL = 'http://localhost:5000/api';
 
 // Fazer requisições autenticadas
 async function makeAuthenticatedRequest(endpoint, options = {}) {
@@ -68,4 +69,14 @@ async function refreshToken() {
         console.error('Erro ao renovar token:', error);
         return false;
     }
+}
+
+// Função de logout compartilhada
+function logout() {
+    localStorage.removeItem('access_token');
+    localStorage.removeItem('refresh_token');
+    localStorage.removeItem('user');
+    // Limpar qualquer dado em cache local
+    localStorage.removeItem('transactions');
+    window.location.href = '../index.html';
 }

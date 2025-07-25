@@ -1,34 +1,82 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap" rel="stylesheet">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="styles/style.css">
-    <title>Cashmind - Seu gerenciador pessoal com IA</title>
+    <title>CashMind - Login</title>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap" rel="stylesheet">
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="styles/global.css">
+    <link rel="stylesheet" href="styles/auth.css">
 </head>
-<body>
-
-
-    <div class="login-container">
-        <img src="content/logoSVG.svg" alt="logo" srcset="">
-
-        <b class="textSimple" >Seja bem vindo!</b>
-        <form action="" class="textSimple" id="loginForm">
-            <label for="nome">Email</label>
-            <input type="text" id="nameInput">
-            <label for="passw">Senha</label>
-            <input type="password" id="passwInput">
-            <span id="submitError" class="error"></span>
-            <button type="submit" class="textSimple basicBtn">Entrar</button>
-        </form>
-    
-        <span class="textSimple">Ainda não possui uma conta? <a href="pages/signUp.html" class="textSimple basicLink">Cadastre-se</a></span>
+<body class="auth-page">
+    <div class="auth-container">
+        <div class="auth-logo">
+            <img src="content/logoSVG.svg" alt="CashMind Logo">
+        </div>
+        
+        <h1 class="auth-title">Seja bem-vindo!</h1>
+        
+        <form class="auth-form" id="loginForm">
+            <div class="form-group">
+                <label for="emailInput" class="form-label">Email</label>
+                <input 
+                    type="email" 
+                    id="emailInput" 
+                    class="form-input" 
+                    placeholder="seu@email.com"
+                    required
+                >
+            </div>
             
+            <div class="form-group">
+                <label for="passwordInput" class="form-label">Senha</label>
+                <div class="password-input-wrapper">
+                    <input 
+                        type="password" 
+                        id="passwordInput" 
+                        class="form-input" 
+                        placeholder="••••••••"
+                        required
+                    >
+                    <button type="button" class="password-toggle" onclick="togglePassword('passwordInput')">
+                        <span class="eye-icon">👁️</span>
+                    </button>
+                </div>
+                <span id="submitError" class="form-error"></span>
+            </div>
+            
+            <button type="submit" class="btn-submit">
+                <span id="loginButtonText">Entrar</span>
+            </button>
+        </form>
+        
+        <div class="auth-footer">
+            Ainda não possui uma conta? 
+            <a href="pages/signUp.html" class="auth-link">Cadastre-se</a>
+        </div>
     </div>
-    
+
+    <script>
+        function togglePassword(inputId) {
+            const input = document.getElementById(inputId);
+            const button = input.nextElementSibling;
+            
+            if (input.type === 'password') {
+                input.type = 'text';
+                button.innerHTML = '<span class="eye-icon">🙈</span>';
+            } else {
+                input.type = 'password';
+                button.innerHTML = '<span class="eye-icon">👁️</span>';
+            }
+        }
+    </script>
+    <script src="scripts/auth.js"></script>
     <script src="scripts/engine.js"></script>
 </body>
-</html>             
+</html>

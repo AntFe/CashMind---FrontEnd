@@ -1,40 +1,176 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
 <head>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap" rel="stylesheet">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="/styles/style.css">
-    <title>Cashmind - Cadastre-se</title>
+    <title>CashMind - Cadastre-se</title>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap" rel="stylesheet">
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="../styles/global.css">
+    <link rel="stylesheet" href="../styles/auth.css">
 </head>
-<body>
-
-    <div class="login-container">
-        <img src="/content/logoSVG.svg" alt="logo" srcset="">
+<body class="auth-page">
+    <div class="auth-container">
+        <div class="auth-logo">
+            <img src="../content/logoSVG.svg" alt="CashMind Logo">
+        </div>
         
-        <b class="textSimple" >Faça seu cadastro</b>
-        <form action="" class="textSimple" id="signupForm">
-            <label for="usernameInput">Nome completo</label>
-            <input type="text" id="usernameInput">
-            <span class="error" id="usernameError"></span>
-            <label for="nameInput">Email</label>
-            <input type="text" id="nameInput">
-            <span class="error" id="emailError"></span>
-            <label for="passwInput">Senha</label>
-            <input type="password" id="passwInput">
-            <span class="error" id="passwordError"></span>
-            <label for="passwConfirm">Confirme sua senha</label>
-            <input type="password" id="passwConfirm">
-            <span class="error" id="confirmPasswError"></span>
-            <button type="submit" class="textSimple basicBtn" onclick="validarFormulario">Criar conta</button>
-        </form>
-    
-        <span class="textSimple">Já possui uma conta? <a href="/index.html" class="textSimple basicLink">Faça login</a></span>
+        <h1 class="auth-title">Crie sua conta</h1>
+        
+        <form class="auth-form" id="signupForm">
+            <div class="form-group">
+                <label for="usernameInput" class="form-label">Nome completo</label>
+                <input 
+                    type="text" 
+                    id="usernameInput" 
+                    class="form-input" 
+                    placeholder="João Silva"
+                    required
+                >
+                <span class="form-error" id="usernameError"></span>
+            </div>
             
+            <div class="form-group">
+                <label for="nameInput" class="form-label">Email</label>
+                <input 
+                    type="email" 
+                    id="nameInput" 
+                    class="form-input" 
+                    placeholder="seu@email.com"
+                    required
+                >
+                <span class="form-error" id="emailError"></span>
+            </div>
+            
+            <div class="form-group">
+                <label for="passwInput" class="form-label">Senha</label>
+                <div class="password-input-wrapper">
+                    <input 
+                        type="password" 
+                        id="passwInput" 
+                        class="form-input" 
+                        placeholder="••••••••"
+                        required
+                    >
+                    <button type="button" class="password-toggle" onclick="togglePassword('passwInput')">
+                        <span class="eye-icon">👁️</span>
+                    </button>
+                </div>
+                <span class="form-error" id="passwordError"></span>
+                
+                <div class="password-requirements" id="passwordRequirements" style="display: none;">
+                    <div class="requirement" id="reqLength">
+                        <span class="req-icon">○</span>
+                        <span>Mínimo 8 caracteres</span>
+                    </div>
+                    <div class="requirement" id="reqUppercase">
+                        <span class="req-icon">○</span>
+                        <span>Uma letra maiúscula</span>
+                    </div>
+                    <div class="requirement" id="reqSpecial">
+                        <span class="req-icon">○</span>
+                        <span>Um caractere especial (#%&*!?)</span>
+                    </div>
+                    <div class="requirement" id="reqNumber">
+                        <span class="req-icon">○</span>
+                        <span>Um número</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="passwConfirm" class="form-label">Confirme sua senha</label>
+                <div class="password-input-wrapper">
+                    <input 
+                        type="password" 
+                        id="passwConfirm" 
+                        class="form-input" 
+                        placeholder="••••••••"
+                        required
+                    >
+                    <button type="button" class="password-toggle" onclick="togglePassword('passwConfirm')">
+                        <span class="eye-icon">👁️</span>
+                    </button>
+                </div>
+                <span class="form-error" id="confirmPasswError"></span>
+            </div>
+            
+            <button type="submit" class="btn-submit">
+                <span id="signupButtonText">Criar conta</span>
+            </button>
+        </form>
+        
+        <div class="auth-footer">
+            Já possui uma conta? 
+            <a href="../index.html" class="auth-link">Faça login</a>
+        </div>
     </div>
-    
-    <script src="/scripts/signupEngine.js"></script>
+
+    <script>
+        function togglePassword(inputId) {
+            const input = document.getElementById(inputId);
+            const button = input.nextElementSibling;
+            
+            if (input.type === 'password') {
+                input.type = 'text';
+                button.innerHTML = '<span class="eye-icon">🙈</span>';
+            } else {
+                input.type = 'password';
+                button.innerHTML = '<span class="eye-icon">👁️</span>';
+            }
+        }
+
+        // Validação dinâmica da senha
+        const passwordInput = document.getElementById('passwInput');
+        const requirementsDiv = document.getElementById('passwordRequirements');
+        
+        passwordInput.addEventListener('focus', () => {
+            requirementsDiv.style.display = 'block';
+        });
+
+        passwordInput.addEventListener('blur', (e) => {
+            if (e.target.value === '') {
+                requirementsDiv.style.display = 'none';
+            }
+        });
+
+        passwordInput.addEventListener('input', (e) => {
+            const password = e.target.value;
+            
+            // Validar cada requisito
+            const requirements = {
+                length: password.length >= 8,
+                uppercase: /[A-Z]/.test(password),
+                special: /[#%&*!?]/.test(password),
+                number: /\d/.test(password)
+            };
+
+            // Atualizar UI
+            updateRequirement('reqLength', requirements.length);
+            updateRequirement('reqUppercase', requirements.uppercase);
+            updateRequirement('reqSpecial', requirements.special);
+            updateRequirement('reqNumber', requirements.number);
+        });
+
+        function updateRequirement(id, isValid) {
+            const element = document.getElementById(id);
+            const icon = element.querySelector('.req-icon');
+            
+            if (isValid) {
+                element.classList.add('valid');
+                icon.textContent = '✓';
+            } else {
+                element.classList.remove('valid');
+                icon.textContent = '○';
+            }
+        }
+    </script>
+    <script src="../scripts/auth.js"></script>
+    <script src="../scripts/signupEngine.js"></script>
 </body>
-</html>             
+</html>
