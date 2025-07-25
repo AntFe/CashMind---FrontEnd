@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CashMind - Análise com IA</title>
+    
+    <!-- Fontes -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap" rel="stylesheet">
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="../styles/global.css">
+    <link rel="stylesheet" href="../styles/layout.css">
+    <link rel="stylesheet" href="../styles/components.css">
+    <link rel="stylesheet" href="../styles/analysis.css">
+</head>
+<body>
+    <div class="app-layout">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-logo">
+                <img src="../content/logoSVG.svg" alt="CashMind">
+            </div>
+            
+            <nav class="sidebar-nav">
+                <a href="dashboard.html" class="nav-item">
+                    <span class="nav-icon">📊</span>
+                    <span>Visão Geral</span>
+                </a>
+                <a href="transactions.html" class="nav-item">
+                    <span class="nav-icon">💰</span>
+                    <span>Transações</span>
+                </a>
+                <a href="#" class="nav-item active">
+                    <span class="nav-icon">🤖</span>
+                    <span>Análise IA</span>
+                </a>
+                <a href="#" class="nav-item" onclick="alert('Em desenvolvimento')">
+                    <span class="nav-icon">⚙️</span>
+                    <span>Configurações</span>
+                </a>
+            </nav>
+            
+            <div class="sidebar-user">
+                <p class="user-name" id="userName">Carregando...</p>
+                <button class="btn-logout" onclick="logout()">Sair</button>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Header -->
+            <header class="app-header">
+                <h1 class="header-title">Análise Inteligente</h1>
+                <div class="month-selector">
+                    <button onclick="changeMonth(-1)">‹</button>
+                    <span id="currentMonth">Janeiro 2024</span>
+                    <button onclick="changeMonth(1)">›</button>
+                </div>
+            </header>
+
+            <div class="content-container">
+                <!-- Status da IA -->
+                <div id="aiStatus" class="ai-status success">
+                    ✅ IA configurada e pronta para análise
+                </div>
+
+                <!-- Botão de Análise -->
+                <section class="analysis-trigger">
+                    <div class="trigger-card">
+                        <div class="trigger-content">
+                            <h2>🤖 Análise Personalizada com IA</h2>
+                            <p>Deixe nossa inteligência artificial analisar seus gastos e fornecer recomendações personalizadas para melhorar sua saúde financeira.</p>
+                            <button class="btn-analyze" onclick="generateAnalysis()">
+                                <span id="analyzeButtonText">Gerar Análise</span>
+                            </button>
+                        </div>
+                        <div class="trigger-illustration">
+                            <div class="ai-icon">🧠</div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Insights Rápidos -->
+                <section class="quick-insights" id="quickInsights">
+                    <h3>💡 Insights Rápidos</h3>
+                    <div class="insights-list" id="insightsList">
+                        <div class="insight-item">
+                            📈 Suas despesas com alimentação aumentaram 15% este mês
+                        </div>
+                        <div class="insight-item">
+                            💰 Você conseguiu economizar 38% da sua renda este mês
+                        </div>
+                        <div class="insight-item">
+                            🎯 Seu maior gasto foi em Moradia (28% do total)
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Resultado da Análise -->
+                <section class="analysis-result" id="analysisResult" style="display: none;">
+                    <div class="result-header">
+                        <h2>📊 Análise Completa</h2>
+                        <span class="result-date" id="resultDate"></span>
+                    </div>
+
+                    <!-- Análise Geral -->
+                    <div class="analysis-section">
+                        <h3>📝 Análise Geral</h3>
+                        <div class="analysis-content" id="generalAnalysis">
+                            <p class="loading">Gerando análise...</p>
+                        </div>
+                    </div>
+
+                    <!-- Pontos Positivos -->
+                    <div class="analysis-section positive" id="positiveSection" style="display: none;">
+                        <h3>✅ Pontos Positivos</h3>
+                        <div class="analysis-content" id="positivePoints"></div>
+                    </div>
+
+                    <!-- Pontos de Atenção -->
+                    <div class="analysis-section attention" id="attentionSection" style="display: none;">
+                        <h3>⚠️ Pontos de Atenção</h3>
+                        <div class="analysis-content" id="attentionPoints"></div>
+                    </div>
+
+                    <!-- Recomendações -->
+                    <div class="analysis-section recommendations" id="recommendationsSection" style="display: none;">
+                        <h3>💡 Recomendações</h3>
+                        <div class="recommendations-list" id="recommendationsList"></div>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <!-- Scripts -->
+    <script src="../scripts/auth.js"></script>
+    <script src="../scripts/analysis.js"></script>
+</body>
+</html>
