@@ -1,11 +1,7 @@
-// Configuração da API
-const API_BASE_URL = 'http://localhost:5000/api';
-
 // Variáveis globais
 let allTransactions = [];
 let filteredTransactions = [];
 let editingTransactionId = null;
-let deleteTransactionId = null;
 
 // Inicialização
 document.addEventListener('DOMContentLoaded', () => {
@@ -27,8 +23,14 @@ function checkAuth() {
 
 // Carregar informações do usuário
 function loadUserInfo() {
-    const user = JSON.parse(localStorage.getItem('user') || '{}');
-    document.getElementById('userName').textContent = user.full_name || 'Usuário';
+    try {
+        const user = JSON.parse(localStorage.getItem('user') || '{}');
+        const userName = user.full_name || user.name || user.email || 'Usuário';
+        document.getElementById('userName').textContent = userName;
+    } catch (error) {
+        console.error('Erro ao carregar informações do usuário:', error);
+        document.getElementById('userName').textContent = 'Usuário';
+    }
 }
 
 // Configurar data padrão (hoje)
@@ -51,12 +53,14 @@ async function loadTransactions() {
         }
         
         const data = await response.json();
-        allTransactions = data.transactions;
+        allTransactions = data.transactions || [];
+        
         filterTransactions();
         
     } catch (error) {
         console.error('Erro ao carregar transações:', error);
-        alert('Erro ao carregar transações');
+        allTransactions = [];
+        filterTransactions();
     }
 }
 
@@ -70,22 +74,25 @@ async function loadCategories() {
         }
         
         const data = await response.json();
+        const categories = data.categories || [];
         
-        // Preencher datalist de categorias
-        const datalist = document.getElementById('categoriesList');
-        datalist.innerHTML = data.categories.map(cat => 
-            `<option value="${cat}">`
-        ).join('');
-        
-        // Preencher select de filtro
         const filterSelect = document.getElementById('filterCategory');
         filterSelect.innerHTML = '<option value="">Todas as categorias</option>' +
-            data.categories.map(cat => 
+            categories.map(cat => 
                 `<option value="${cat}">${cat}</option>`
             ).join('');
         
     } catch (error) {
         console.error('Erro ao carregar categorias:', error);
+        // Usar categorias padrão em caso de erro
+        const defaultCategories = ['Salário', 'Freelance', 'Alimentação', 'Transporte', 
+                                  'Moradia', 'Lazer', 'Saúde', 'Educação', 'Outros'];
+        
+        const filterSelect = document.getElementById('filterCategory');
+        filterSelect.innerHTML = '<option value="">Todas as categorias</option>' +
+            defaultCategories.map(cat => 
+                `<option value="${cat}">${cat}</option>`
+            ).join('');
     }
 }
 
@@ -131,7 +138,7 @@ function filterTransactions() {
 
 // Renderizar transações
 function renderTransactions() {
-    const tbody = document.getElementById('transactionsList');
+    const tbody = document.getElementById('transactionsTableBody');
     const count = document.getElementById('transactionCount');
     
     count.textContent = `${filteredTransactions.length} transações`;
@@ -209,22 +216,27 @@ async function saveTransaction(event) {
         amount: parseFloat(document.getElementById('transactionAmount').value),
         date: document.getElementById('transactionDate').value,
         type: document.getElementById('transactionType').value,
-        recurrence: document.getElementById('transactionRecurrence').value,
-        category: document.getElementById('transactionCategory').value.toLowerCase(),
+        recurrence: 'variable', // O backend espera 'recurrence', não usado na UI
+        category: document.getElementById('transactionCategory').value,
         description: document.getElementById('transactionDescription').value
     };
     
     try {
-        const url = editingTransactionId 
-            ? `/transactions/${editingTransactionId}`
-            : '/transactions/';
+        let response;
         
-        const method = editingTransactionId ? 'PUT' : 'POST';
-        
-        const response = await makeAuthenticatedRequest(url, {
-            method: method,
-            body: JSON.stringify(transactionData)
-        });
+        if (editingTransactionId) {
+            // Editar transação existente
+            response = await makeAuthenticatedRequest(`/transactions/${editingTransactionId}`, {
+                method: 'PUT',
+                body: JSON.stringify(transactionData)
+            });
+        } else {
+            // Criar nova transação
+            response = await makeAuthenticatedRequest('/transactions/', {
+                method: 'POST',
+                body: JSON.stringify(transactionData)
+            });
+        }
         
         if (!response.ok) {
             const error = await response.json();
@@ -232,7 +244,7 @@ async function saveTransaction(event) {
         }
         
         closeTransactionModal();
-        loadTransactions();
+        await loadTransactions(); // Recarregar transações
         
         // Mostrar mensagem de sucesso
         alert(editingTransactionId ? 'Transação atualizada!' : 'Transação criada!');
@@ -257,7 +269,6 @@ function editTransaction(id) {
     document.getElementById('transactionAmount').value = transaction.amount;
     document.getElementById('transactionDate').value = transaction.date;
     document.getElementById('transactionType').value = transaction.type;
-    document.getElementById('transactionRecurrence').value = transaction.recurrence;
     document.getElementById('transactionCategory').value = transaction.category;
     document.getElementById('transactionDescription').value = transaction.description || '';
     
@@ -266,23 +277,11 @@ function editTransaction(id) {
 }
 
 // Deletar transação
-function deleteTransaction(id) {
-    deleteTransactionId = id;
-    document.getElementById('deleteModal').classList.add('active');
-}
-
-// Fechar modal de exclusão
-function closeDeleteModal() {
-    document.getElementById('deleteModal').classList.remove('active');
-    deleteTransactionId = null;
-}
-
-// Confirmar exclusão
-async function confirmDelete() {
-    if (!deleteTransactionId) return;
+async function deleteTransaction(id) {
+    if (!confirm('Tem certeza que deseja excluir esta transação?')) return;
     
     try {
-        const response = await makeAuthenticatedRequest(`/transactions/${deleteTransactionId}`, {
+        const response = await makeAuthenticatedRequest(`/transactions/${id}`, {
             method: 'DELETE'
         });
         
@@ -290,8 +289,7 @@ async function confirmDelete() {
             throw new Error('Erro ao deletar transação');
         }
         
-        closeDeleteModal();
-        loadTransactions();
+        await loadTransactions(); // Recarregar transações
         alert('Transação excluída com sucesso!');
         
     } catch (error) {
@@ -321,3 +319,12 @@ function logout() {
     localStorage.removeItem('user');
     window.location.href = '../index.html';
 }
+
+// Tornar funções acessíveis globalmente
+window.openTransactionModal = openTransactionModal;
+window.closeTransactionModal = closeTransactionModal;
+window.saveTransaction = saveTransaction;
+window.editTransaction = editTransaction;
+window.deleteTransaction = deleteTransaction;
+window.filterTransactions = filterTransactions;
+window.updateModalStyle = updateModalStyle;

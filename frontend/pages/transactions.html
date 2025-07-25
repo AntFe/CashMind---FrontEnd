@@ -5,139 +5,164 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CashMind - Transações</title>
     
-    <!-- Fontes -->
+    <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap" rel="stylesheet">
     
     <!-- CSS -->
-    <link rel="stylesheet" href="../styles/style.css">
-    <link rel="stylesheet" href="../styles/dashboard.css">
+    <link rel="stylesheet" href="../styles/global.css">
+    <link rel="stylesheet" href="../styles/layout.css">
+    <link rel="stylesheet" href="../styles/components.css">
     <link rel="stylesheet" href="../styles/transactions.css">
+    <link rel="stylesheet" href="../styles/modal.css">
 </head>
 <body>
-    <!-- Sidebar (reutilizando do dashboard) -->
-    <aside class="sidebar">
-        <div class="logo-container">
-            <img src="../content/logoSVG.svg" alt="CashMind" class="logo">
-        </div>
+    <div class="app-layout">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-logo">
+                <img src="../content/logoSVG.svg" alt="CashMind">
+            </div>
+            
+            <nav class="sidebar-nav">
+                <a href="dashboard.html" class="nav-item">
+                    <span class="nav-icon">📊</span>
+                    <span>Visão Geral</span>
+                </a>
+                <a href="#" class="nav-item active">
+                    <span class="nav-icon">💰</span>
+                    <span>Transações</span>
+                </a>
+                <a href="analysis.html" class="nav-item">
+                    <span class="nav-icon">🤖</span>
+                    <span>Análise IA</span>
+                </a>
+                <a href="#" class="nav-item" onclick="alert('Em desenvolvimento')">
+                    <span class="nav-icon">⚙️</span>
+                    <span>Configurações</span>
+                </a>
+            </nav>
+            
+            <div class="sidebar-user">
+                <p class="user-name" id="userName">Carregando...</p>
+                <button class="btn-logout" onclick="logout()">Sair</button>
+            </div>
+        </aside>
         
-        <nav class="nav-menu">
-            <a href="dashboard.html" class="nav-item">
-                <span>📊</span> Visão Geral
-            </a>
-            <a href="#" class="nav-item active">
-                <span>💰</span> Transações
-            </a>
-            <a href="#" class="nav-item" onclick="alert('Em desenvolvimento')">
-                <span>📈</span> Relatórios
-            </a>
-            <a href="#" class="nav-item" onclick="alert('Em desenvolvimento')">
-                <span>⚙️</span> Configurações
-            </a>
-        </nav>
-        
-        <div class="user-section">
-            <p class="user-name" id="userName">Carregando...</p>
-            <button class="logout-btn" onclick="logout()">Sair</button>
-        </div>
-    </aside>
-
-    <!-- Main Content -->
-    <main class="main-content">
-        <!-- Header -->
-        <header class="page-header">
-            <h1>Transações</h1>
-            <button class="btn-primary" onclick="openTransactionModal()">
-                + Nova Transação
-            </button>
-        </header>
-
-        <!-- Filtros -->
-        <section class="filters-section">
-            <div class="filter-group">
-                <select id="filterType" onchange="filterTransactions()">
-                    <option value="">Todos os tipos</option>
-                    <option value="income">Receitas</option>
-                    <option value="expense">Despesas</option>
-                </select>
-            </div>
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Header -->
+            <header class="app-header">
+                <h1 class="header-title">Transações</h1>
+            </header>
             
-            <div class="filter-group">
-                <select id="filterCategory" onchange="filterTransactions()">
-                    <option value="">Todas as categorias</option>
-                </select>
+            <!-- Content -->
+            <div class="content-container">
+                <!-- Page Actions -->
+                <div class="page-actions">
+                    <h2 class="page-title">Gerenciar Transações</h2>
+                    <button class="btn btn-primary" onclick="openTransactionModal()">
+                        <span>+</span>
+                        <span>Nova Transação</span>
+                    </button>
+                </div>
+                
+                <!-- Filters -->
+                <div class="filters-container">
+                    <div class="filters-grid">
+                        <div class="filter-group">
+                            <label>Tipo</label>
+                            <select id="filterType" class="filter-select" onchange="filterTransactions()">
+                                <option value="">Todos</option>
+                                <option value="income">Receitas</option>
+                                <option value="expense">Despesas</option>
+                            </select>
+                        </div>
+                        
+                        <div class="filter-group">
+                            <label>Categoria</label>
+                            <select id="filterCategory" class="filter-select" onchange="filterTransactions()">
+                                <option value="">Todas</option>
+                            </select>
+                        </div>
+                        
+                        <div class="filter-group">
+                            <label>Mês</label>
+                            <input type="month" id="filterMonth" class="filter-input" onchange="filterTransactions()">
+                        </div>
+                        
+                        <div class="filter-group">
+                            <label>Buscar</label>
+                            <input type="text" id="searchInput" class="filter-input" 
+                                   placeholder="Buscar transação..." oninput="filterTransactions()">
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Transactions Container -->
+                <div class="transactions-container">
+                    <div class="transactions-header">
+                        <h3>Lista de Transações</h3>
+                        <span class="transactions-count" id="transactionCount">0 transações</span>
+                    </div>
+                    
+                    <!-- Desktop Table View -->
+                    <div class="transactions-table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Data</th>
+                                    <th>Descrição</th>
+                                    <th>Categoria</th>
+                                    <th>Tipo</th>
+                                    <th>Valor</th>
+                                    <th>Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody id="transactionsTableBody">
+                                <tr>
+                                    <td colspan="6" class="loading">Carregando transações...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
-            
-            <div class="filter-group">
-                <input type="month" id="filterMonth" onchange="filterTransactions()">
-            </div>
-            
-            <div class="filter-group">
-                <input type="text" id="searchInput" placeholder="Buscar transação..." 
-                       oninput="filterTransactions()">
-            </div>
-        </section>
+        </main>
+    </div>
 
-        <!-- Lista de Transações -->
-        <section class="transactions-container">
-            <div class="transactions-header">
-                <h3>Todas as Transações</h3>
-                <span id="transactionCount">0 transações</span>
-            </div>
-            
-            <div class="transactions-table">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Data</th>
-                            <th>Descrição</th>
-                            <th>Categoria</th>
-                            <th>Tipo</th>
-                            <th>Valor</th>
-                            <th>Ações</th>
-                        </tr>
-                    </thead>
-                    <tbody id="transactionsList">
-                        <tr>
-                            <td colspan="6" class="loading">Carregando transações...</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </section>
-    </main>
-
-    <!-- Modal de Transação -->
+    <!-- Transaction Modal -->
     <div id="transactionModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
                 <h2 id="modalTitle">Nova Transação</h2>
-                <button class="close-btn" onclick="closeTransactionModal()">×</button>
+                <button class="modal-close" onclick="closeTransactionModal()">×</button>
             </div>
             
             <form id="transactionForm" onsubmit="saveTransaction(event)">
                 <div class="form-group">
-                    <label for="transactionName">Nome*</label>
-                    <input type="text" id="transactionName" required>
+                    <label class="form-label required">Nome</label>
+                    <input type="text" id="transactionName" class="form-control" required>
                 </div>
                 
                 <div class="form-row">
                     <div class="form-group">
-                        <label for="transactionAmount">Valor*</label>
-                        <input type="number" id="transactionAmount" step="0.01" required>
+                        <label class="form-label required">Valor</label>
+                        <input type="number" id="transactionAmount" class="form-control" 
+                               step="0.01" min="0.01" required>
                     </div>
                     
                     <div class="form-group">
-                        <label for="transactionDate">Data*</label>
-                        <input type="date" id="transactionDate" required>
+                        <label class="form-label required">Data</label>
+                        <input type="date" id="transactionDate" class="form-control" required>
                     </div>
                 </div>
                 
                 <div class="form-row">
                     <div class="form-group">
-                        <label for="transactionType">Tipo*</label>
-                        <select id="transactionType" required onchange="updateModalStyle()">
+                        <label class="form-label required">Tipo</label>
+                        <select id="transactionType" class="form-control" required onchange="updateModalStyle()">
                             <option value="">Selecione...</option>
                             <option value="income">Receita</option>
                             <option value="expense">Despesa</option>
@@ -145,56 +170,36 @@
                     </div>
                     
                     <div class="form-group">
-                        <label for="transactionRecurrence">Recorrência*</label>
-                        <select id="transactionRecurrence" required>
+                        <label class="form-label required">Categoria</label>
+                        <select id="transactionCategory" class="form-control" required>
                             <option value="">Selecione...</option>
-                            <option value="fixed">Fixo</option>
-                            <option value="variable">Variável</option>
+                            <option value="Salário">Salário</option>
+                            <option value="Freelance">Freelance</option>
+                            <option value="Alimentação">Alimentação</option>
+                            <option value="Transporte">Transporte</option>
+                            <option value="Moradia">Moradia</option>
+                            <option value="Lazer">Lazer</option>
+                            <option value="Saúde">Saúde</option>
+                            <option value="Educação">Educação</option>
+                            <option value="Outros">Outros</option>
                         </select>
                     </div>
                 </div>
                 
                 <div class="form-group">
-                    <label for="transactionCategory">Categoria*</label>
-                    <input type="text" id="transactionCategory" list="categoriesList" required>
-                    <datalist id="categoriesList"></datalist>
+                    <label class="form-label">Descrição</label>
+                    <textarea id="transactionDescription" class="form-control" rows="3"></textarea>
                 </div>
                 
-                <div class="form-group">
-                    <label for="transactionDescription">Descrição</label>
-                    <textarea id="transactionDescription" rows="3"></textarea>
-                </div>
-                
-                <div class="form-actions">
-                    <button type="button" class="btn-secondary" onclick="closeTransactionModal()">
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="closeTransactionModal()">
                         Cancelar
                     </button>
-                    <button type="submit" class="btn-primary">
+                    <button type="submit" class="btn btn-primary">
                         <span id="submitButtonText">Adicionar</span>
                     </button>
                 </div>
             </form>
-        </div>
-    </div>
-
-    <!-- Modal de Confirmação de Exclusão -->
-    <div id="deleteModal" class="modal">
-        <div class="modal-content modal-small">
-            <div class="modal-header">
-                <h2>Confirmar Exclusão</h2>
-            </div>
-            
-            <p>Tem certeza que deseja excluir esta transação?</p>
-            <p class="warning-text">Esta ação não pode ser desfeita.</p>
-            
-            <div class="form-actions">
-                <button class="btn-secondary" onclick="closeDeleteModal()">
-                    Cancelar
-                </button>
-                <button class="btn-danger" onclick="confirmDelete()">
-                    Excluir
-                </button>
-            </div>
         </div>
     </div>
 
