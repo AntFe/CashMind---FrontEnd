@@ -5,111 +5,134 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CashMind - Dashboard</title>
     
-    <!-- Fontes -->
+    <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap" rel="stylesheet">
     
     <!-- CSS -->
-    <link rel="stylesheet" href="../styles/style.css">
-    <link rel="stylesheet" href="../styles/dashboard.css">
+    <link rel="stylesheet" href="../styles/global.css">
+    <link rel="stylesheet" href="../styles/layout.css">
+    <link rel="stylesheet" href="../styles/components.css">
+    <link rel="stylesheet" href="../styles/dashboard-specific.css">
     
-    <!-- Chart.js para gráficos -->
+    <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
-    <!-- Sidebar -->
-    <aside class="sidebar">
-        <div class="logo-container">
-            <img src="../content/logoSVG.svg" alt="CashMind" class="logo">
-        </div>
-        
-        <nav class="nav-menu">
-            <a href="#" class="nav-item active">
-                <span>📊</span> Visão Geral
-            </a>
-            <a href="transactions.html" class="nav-item">
-                <span>💰</span> Transações
-            </a>
-            <a href="#" class="nav-item" onclick="alert('Em desenvolvimento')">
-                <span>📈</span> Relatórios
-            </a>
-            <a href="#" class="nav-item" onclick="alert('Em desenvolvimento')">
-                <span>⚙️</span> Configurações
-            </a>
-        </nav>
-        
-        <div class="user-section">
-            <p class="user-name" id="userName">Carregando...</p>
-            <button class="logout-btn" onclick="logout()">Sair</button>
-        </div>
-    </aside>
-
-    <!-- Main Content -->
-    <main class="main-content">
-        <!-- Header -->
-        <header class="dashboard-header">
-            <h1>Dashboard</h1>
-            <div class="month-selector">
-                <button onclick="changeMonth(-1)">◀</button>
-                <span id="currentMonth">Janeiro 2024</span>
-                <button onclick="changeMonth(1)">▶</button>
-            </div>
-        </header>
-
-        <!-- Cards de Resumo -->
-        <section class="summary-cards">
-            <div class="card income-card">
-                <h3>Receitas</h3>
-                <p class="amount" id="totalIncome">R$ 0,00</p>
-                <span class="indicator positive">↑</span>
+    <div class="app-layout">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-logo">
+                <img src="../content/logoSVG.svg" alt="CashMind">
             </div>
             
-            <div class="card expense-card">
-                <h3>Despesas</h3>
-                <p class="amount" id="totalExpense">R$ 0,00</p>
-                <span class="indicator negative">↓</span>
-            </div>
+            <nav class="sidebar-nav">
+                <a href="#" class="nav-item active">
+                    <span class="nav-icon">📊</span>
+                    <span>Visão Geral</span>
+                </a>
+                <a href="transactions.html" class="nav-item">
+                    <span class="nav-icon">💰</span>
+                    <span>Transações</span>
+                </a>
+                <a href="analysis.html" class="nav-item">
+                    <span class="nav-icon">🤖</span>
+                    <span>Análise IA</span>
+                </a>
+                <a href="#" class="nav-item" onclick="alert('Em desenvolvimento')">
+                    <span class="nav-icon">⚙️</span>
+                    <span>Configurações</span>
+                </a>
+            </nav>
             
-            <div class="card balance-card">
-                <h3>Saldo</h3>
-                <p class="amount" id="balance">R$ 0,00</p>
-                <div class="balance-bar">
-                    <div class="balance-fill" id="balanceFill"></div>
+            <div class="sidebar-user">
+                <p class="user-name" id="userName">Carregando...</p>
+                <button class="btn-logout" onclick="logout()">Sair</button>
+            </div>
+        </aside>
+        
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Header -->
+            <header class="app-header">
+                <h1 class="header-title">Dashboard</h1>
+                
+                <div class="month-selector">
+                    <button onclick="changeMonth(-1)">‹</button>
+                    <span id="currentMonth">Janeiro 2024</span>
+                    <button onclick="changeMonth(1)">›</button>
+                </div>
+            </header>
+            
+            <!-- Content -->
+            <div class="content-container">
+                <!-- Summary Cards -->
+                <div class="summary-grid">
+                    <div class="summary-card income">
+                        <div class="card-icon">💰</div>
+                        <div class="card-content">
+                            <h3>Receitas</h3>
+                            <p class="card-value" id="totalIncome">R$ 0,00</p>
+                        </div>
+                    </div>
+                    
+                    <div class="summary-card expense">
+                        <div class="card-icon">💸</div>
+                        <div class="card-content">
+                            <h3>Despesas</h3>
+                            <p class="card-value" id="totalExpense">R$ 0,00</p>
+                        </div>
+                    </div>
+                    
+                    <div class="summary-card balance">
+                        <div class="card-icon">💵</div>
+                        <div class="card-content">
+                            <h3>Saldo</h3>
+                            <p class="card-value" id="balance">R$ 0,00</p>
+                            <div class="balance-bar">
+                                <div class="balance-fill" id="balanceFill"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Charts Section -->
+                <div class="charts-grid">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Despesas por Categoria</h3>
+                        </div>
+                        <div class="card-body">
+                            <canvas id="categoryChart"></canvas>
+                        </div>
+                    </div>
+                    
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Tendência Mensal</h3>
+                        </div>
+                        <div class="card-body">
+                            <canvas id="trendChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Recent Transactions -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Transações Recentes</h3>
+                        <a href="transactions.html" class="btn btn-sm btn-outline">Ver todas →</a>
+                    </div>
+                    <div class="card-body">
+                        <div id="recentTransactionsList" class="transactions-list">
+                            <p class="loading-text">Nenhuma transação encontrada</p>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </section>
-
-        <!-- Gráficos -->
-        <section class="charts-section">
-            <div class="chart-container">
-                <h3>Despesas por Categoria</h3>
-                <canvas id="categoryChart"></canvas>
-            </div>
-            
-            <div class="chart-container">
-                <h3>Tendência Mensal</h3>
-                <canvas id="trendChart"></canvas>
-            </div>
-        </section>
-
-        <!-- Transações Recentes -->
-        <section class="recent-transactions">
-            <div class="section-header">
-                <h3>Transações Recentes</h3>
-                <a href="transactions.html" class="see-all">Ver todas →</a>
-            </div>
-            
-            <div class="transactions-list" id="recentTransactionsList">
-                <p class="loading">Carregando transações...</p>
-            </div>
-        </section>
-
-        <!-- Botão Flutuante para Adicionar -->
-        <button class="fab" onclick="window.location.href='transactions.html'">
-            +
-        </button>
-    </main>
+        </main>
+    </div>
 
     <!-- Scripts -->
     <script src="../scripts/auth.js"></script>

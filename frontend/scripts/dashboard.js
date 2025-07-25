@@ -1,6 +1,3 @@
-// Configuração da API
-const API_BASE_URL = 'http://localhost:5000/api';
-
 // Variáveis globais
 let currentMonth = new Date().getMonth() + 1;
 let currentYear = new Date().getFullYear();
@@ -26,8 +23,14 @@ function checkAuth() {
 
 // Carregar informações do usuário
 function loadUserInfo() {
-    const user = JSON.parse(localStorage.getItem('user') || '{}');
-    document.getElementById('userName').textContent = user.full_name || 'Usuário';
+    try {
+        const user = JSON.parse(localStorage.getItem('user') || '{}');
+        const userName = user.full_name || user.name || user.email || 'Usuário';
+        document.getElementById('userName').textContent = userName;
+    } catch (error) {
+        console.error('Erro ao carregar informações do usuário:', error);
+        document.getElementById('userName').textContent = 'Usuário';
+    }
 }
 
 // Logout
@@ -68,14 +71,8 @@ function updateMonthDisplay() {
 // Carregar dados do dashboard
 async function loadDashboardData() {
     try {
-        const token = localStorage.getItem('access_token');
-        const response = await fetch(
-            `${API_BASE_URL}/dashboard/analytics?month=${currentMonth}&year=${currentYear}`,
-            {
-                headers: {
-                    'Authorization': `Bearer ${token}`
-                }
-            }
+        const response = await makeAuthenticatedRequest(
+            `/dashboard/analytics?month=${currentMonth}&year=${currentYear}`
         );
 
         if (!response.ok) {
@@ -96,13 +93,16 @@ async function loadDashboardData() {
         
     } catch (error) {
         console.error('Erro ao carregar dashboard:', error);
-        alert('Erro ao carregar dados do dashboard');
+        // Se não houver dados, mostrar valores zerados
+        updateSummaryCards({ income: 0, expense: 0, balance: 0 });
+        updateCategoryChart([]);
+        updateTrendChart([]);
+        updateRecentTransactions([]);
     }
 }
 
 // Atualizar cards de resumo
 function updateSummaryCards(summary) {
-    // Formatar valores
     document.getElementById('totalIncome').textContent = formatCurrency(summary.income);
     document.getElementById('totalExpense').textContent = formatCurrency(summary.expense);
     document.getElementById('balance').textContent = formatCurrency(summary.balance);
@@ -126,12 +126,34 @@ function updateSummaryCards(summary) {
 function updateCategoryChart(categories) {
     const ctx = document.getElementById('categoryChart').getContext('2d');
     
-    // Destruir gráfico anterior se existir
     if (categoryChart) {
         categoryChart.destroy();
     }
     
-    // Preparar dados
+    // Se não houver dados, mostrar mensagem
+    if (!categories || categories.length === 0) {
+        categoryChart = new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Sem dados'],
+                datasets: [{
+                    data: [1],
+                    backgroundColor: ['#666666']
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                }
+            }
+        });
+        return;
+    }
+    
     const labels = categories.map(c => c.category);
     const data = categories.map(c => c.amount);
     const backgroundColors = [
@@ -172,12 +194,45 @@ function updateCategoryChart(categories) {
 function updateTrendChart(monthlyData) {
     const ctx = document.getElementById('trendChart').getContext('2d');
     
-    // Destruir gráfico anterior se existir
     if (trendChart) {
         trendChart.destroy();
     }
     
-    // Preparar dados
+    // Se não houver dados, mostrar gráfico vazio
+    if (!monthlyData || monthlyData.length === 0) {
+        const emptyLabels = ['Sem dados'];
+        const emptyData = [0];
+        
+        trendChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: emptyLabels,
+                datasets: [{
+                    label: 'Sem transações',
+                    data: emptyData,
+                    borderColor: '#666666',
+                    backgroundColor: 'rgba(102, 102, 102, 0.1)'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        max: 100
+                    }
+                }
+            }
+        });
+        return;
+    }
+    
     const labels = monthlyData.map(d => `${d.month}/${d.year}`);
     const incomeData = monthlyData.map(d => d.income);
     const expenseData = monthlyData.map(d => d.expense);
@@ -238,7 +293,7 @@ function updateRecentTransactions(transactions) {
     const container = document.getElementById('recentTransactionsList');
     
     if (transactions.length === 0) {
-        container.innerHTML = '<p class="loading">Nenhuma transação encontrada</p>';
+        container.innerHTML = '<p class="loading-text">Nenhuma transação encontrada</p>';
         return;
     }
     
@@ -270,6 +325,6 @@ function formatCurrency(value) {
 
 // Formatar data
 function formatDate(dateString) {
-    const date = new Date(dateString);
+    const date = new Date(dateString + 'T00:00:00');
     return date.toLocaleDateString('pt-BR');
 }
