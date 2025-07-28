@@ -89,7 +89,6 @@ classDiagram
         -Float amount
         -TransactionType transaction_type
         -RecurrenceType recurrence_type
-        -String category
         -Date date
         -String description
         +to_dict()
@@ -149,11 +148,11 @@ classDiagram
     User "1" --> "*" Transaction : "realiza"
     User "1" --> "*" Budget : "define"
     User "1" --> "*" Goal : "almeja"
-    User "1" --> "*" AnalysisReport : "recebe"
     User "1" --> "*" Category : "cria"
+    User "1" --> "*" AnalysisReport : "recebe"
 
-    Transaction "1" --> "1" Category : "classificada como"
     Budget "1" --> "1" Category : "para categoria"
+    Transaction "1" --> "1" Category : "classificada como"
     Transaction --> TransactionType
     Transaction --> RecurrenceType
 
