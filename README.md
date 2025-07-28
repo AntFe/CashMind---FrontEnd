@@ -50,80 +50,113 @@ CashMind é um sistema web de gestão financeira pessoal que utiliza inteligênc
 classDiagram
     direction LR
 
+    %% ENUMS
+    class TransactionType {
+        <<enumeration>>
+        +INCOME
+        +EXPENSE
+    }
+
+    class RecurrenceType {
+        <<enumeration>>
+        +NONE
+        +DAILY
+        +WEEKLY
+        +MONTHLY
+        +YEARLY
+    }
+
+    %% CLASSES
+
     class User {
-        +Integer id
-        +String full_name
-        +String email
-        +String password_hash
-        +DateTime created_at
-        +DateTime updated_at
-        +Boolean is_active
+        -Integer id
+        -String full_name
+        -String email
+        -String password_hash
+        -DateTime created_at
+        -DateTime updated_at
+        -Boolean is_active
         +set_password(password)
         +check_password(password)
         +to_dict()
+        +get_balance()
     }
-    
+
     class Transaction {
-        +Integer id
-        +Integer user_id
-        +String name
-        +Float amount
-        +TransactionType transaction_type
-        +RecurrenceType recurrence_type
-        +String category
-        +Date date
-        +String description
+        -Integer id
+        -Integer user_id
+        -String name
+        -Float amount
+        -TransactionType transaction_type
+        -RecurrenceType recurrence_type
+        -String category
+        -Date date
+        -String description
         +to_dict()
+        +is_recurring()
+        +validate_amount()
     }
-    
+
     class Category {
-        +Integer id
-        +String name
-        +String icon
-        +String color
-        +Boolean is_default
+        -Integer id
+        -Integer user_id
+        -String name
+        -String icon
+        -String color
+        -Boolean is_default
         +get_default_categories()
         +to_dict()
     }
 
     class Budget {
-        +Integer id
-        +Integer user_id
-        +Integer category_id
-        +Float amount
-        +Date month
+        -Integer id
+        -Integer user_id
+        -Integer category_id
+        -Float amount
+        -Date month
         +get_spent_amount()
         +get_progress_percentage()
+        +is_exceeded()
     }
 
     class Goal {
-        +Integer id
-        +String name
-        +Float target_amount
-        +Float current_amount
-        +Date deadline
+        -Integer id
+        -Integer user_id
+        -String name
+        -Float target_amount
+        -Float current_amount
+        -Date deadline
         +update_progress(amount)
+        +is_achieved()
+        +days_remaining()
     }
-    
+
     class AnalysisReport {
-        +Integer id
-        +Integer user_id
-        +Date analysis_date
-        +String period
-        +String general_summary
-        +String positive_points
-        +String attention_points
-        +String[] recommendations
+        -Integer id
+        -Integer user_id
+        -Date analysis_date
+        -String period
+        -String general_summary
+        -String positive_points
+        -String attention_points
+        -String[] recommendations
+        +to_dict()
+        +summarize()
     }
 
-    User "1" -- " *" Transaction : "Registra"
-    User "1" -- " *" Budget : "Define"
-    User "1" -- " *" Goal : "Possui"
-    User "1" -- " *" AnalysisReport : "Recebe"
+    %% RELAÇÕES COM NOMES
 
-    Transaction "1" --> "1" Category : "Pertence a"
+    User "1" --> "*" Transaction : "realiza"
+    User "1" --> "*" Budget : "define"
+    User "1" --> "*" Goal : "almeja"
+    User "1" --> "*" AnalysisReport : "recebe"
+    User "1" --> "*" Category : "cria"
 
-    Budget "1" --> "1" Category : "Para a categoria"
+    Transaction "1" --> "1" Category : "classificada como"
+    Budget "1" --> "1" Category : "para categoria"
+    Transaction --> TransactionType
+    Transaction --> RecurrenceType
+
 
 ```
 
