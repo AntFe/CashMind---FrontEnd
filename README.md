@@ -158,6 +158,7 @@ classDiagram
 
 ### Frontend
 - **HTML5/CSS3/JavaScript**: Tecnologias base
+- **React** : Como framework para design das páginas
 - **Chart.js**: Gráficos e visualizações
 - **Fetch API**: Comunicação com backend
 - **JWT**: Autenticação no cliente
