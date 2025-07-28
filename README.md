@@ -15,6 +15,19 @@
 
 CashMind é um sistema web de gestão financeira pessoal que utiliza inteligência artificial para fornecer insights e recomendações personalizadas sobre os hábitos financeiros dos usuários.
 
+### ✨ Principais Funcionalidades
+- **Dashboard Visual**: Resumo financeiro com saldo atual, total de receitas e despesas.
+
+- **Registro de Transações**: Adicione, edite e remova facilmente suas receitas e despesas.
+
+- **Categorização Inteligente**: Classifique suas transações para entender melhor seus gastos.
+
+- **Análise com IA**: Receba um relatório detalhado com insights e dicas de economia gerado pela IA do Google.
+
+- **Visualização Gráfica**: Gráficos interativos para analisar a distribuição de despesas por categoria.
+
+- **Autenticação Segura**: Sistema de login e cadastro com proteção por JWT.
+
 ### 🎯 Problema que Resolve
 
 - Dificuldade em controlar gastos pessoais
@@ -35,6 +48,8 @@ CashMind é um sistema web de gestão financeira pessoal que utiliza inteligênc
 
 ```mermaid
 classDiagram
+    direction LR
+
     class User {
         +Integer id
         +String full_name
@@ -57,7 +72,7 @@ classDiagram
         +RecurrenceType recurrence_type
         +String category
         +Date date
-        +Text description
+        +String description
         +to_dict()
     }
     
@@ -70,23 +85,59 @@ classDiagram
         +get_default_categories()
         +to_dict()
     }
+
+    class Budget {
+        +Integer id
+        +Integer user_id
+        +Integer category_id
+        +Float amount
+        +Date month
+        +get_spent_amount()
+        +get_progress_percentage()
+    }
+
+    class Goal {
+        +Integer id
+        +String name
+        +Float target_amount
+        +Float current_amount
+        +Date deadline
+        +update_progress(amount)
+    }
     
+    class AnalysisReport {
+        +Integer id
+        +Integer user_id
+        +Date analysis_date
+        +String period
+        +String general_summary
+        +String positive_points
+        +String attention_points
+        +String[] recommendations
+    }
+
+    class AIService {
+        +analyze_finances(transactions) AnalysisReport
+    }
+
     class TransactionType {
         <<enumeration>>
         INCOME
         EXPENSE
     }
-    
-    class RecurrenceType {
-        <<enumeration>>
-        FIXED
-        VARIABLE
-    }
-    
-    User "1" -- "*" Transaction : has
-    Transaction ..> Category : uses
-    Transaction ..> TransactionType : uses
-    Transaction ..> RecurrenceType : uses
+
+    User "1" -- " *" Transaction : "Registra"
+    User "1" -- " *" Budget : "Define"
+    User "1" -- " *" Goal : "Possui"
+    User "1" -- " *" AnalysisReport : "Recebe"
+
+    Transaction --> "1" Category : "Pertence a"
+    Transaction --|> TransactionType
+
+    Budget --> "1" Category : "Para a categoria"
+
+    AIService ..> Transaction : "Usa"
+    AIService ..> AnalysisReport : "Gera"
 ```
 
 ## 🛠️ Ferramentas e Tecnologias
@@ -361,4 +412,4 @@ Este projeto é parte de um trabalho acadêmico da UFES.
 
 ---
 
-Desenvolvido com 💚 para a disciplina de Projeto de Software - UFES
+Desenvolvido com 💚 para a disciplina de Projeto Integrador - UFES
