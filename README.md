@@ -142,9 +142,10 @@ classDiagram
 
 ## 🛠️ Ferramentas e Tecnologias
 
-### Sistema de Controle de Versão
+### Sistema de Controle de Versão e Colaboração
 - **Git**: Controle de versão distribuído
 - **GitHub**: Hospedagem do repositório e colaboração
+- **GitHub Issues**: Gerenciamento de tarefas, bugs e melhorias.
 
 ### Backend
 - **Python 3.8+**: Linguagem principal
@@ -153,6 +154,7 @@ classDiagram
 - **Flask-JWT-Extended**: Autenticação JWT
 - **Flask-CORS**: Habilitação de CORS
 - **SQLite**: Banco de dados
+- **Google Gemini API**: Para funcionalidade de IA.
 
 ### Frontend
 - **HTML5/CSS3/JavaScript**: Tecnologias base
