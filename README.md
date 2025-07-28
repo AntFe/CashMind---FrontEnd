@@ -151,8 +151,8 @@ classDiagram
     User "1" --> "*" Category : "cria"
     User "1" --> "*" AnalysisReport : "recebe"
 
-    Budget "1" --> "1" Category : "para categoria"
-    Transaction "1" --> "1" Category : "classificada como"
+    Budget "*" --> "1" Category : "para categoria"
+    Transaction "*" --> "1" Category : "classificada como"
     Transaction --> TransactionType
     Transaction --> RecurrenceType
 
