@@ -116,22 +116,15 @@ classDiagram
         +String[] recommendations
     }
 
-    class AIService {
-        +analyze_finances(transactions) AnalysisReport
-    }
-
     User "1" -- " *" Transaction : "Registra"
     User "1" -- " *" Budget : "Define"
     User "1" -- " *" Goal : "Possui"
     User "1" -- " *" AnalysisReport : "Recebe"
 
-    Transaction --> "1" Category : "Pertence a"
-    Transaction --|> TransactionType
+    Transaction "1" --> "1" Category : "Pertence a"
 
-    Budget --> "1" Category : "Para a categoria"
+    Budget "1" --> "1" Category : "Para a categoria"
 
-    AIService ..> Transaction : "Usa"
-    AIService ..> AnalysisReport : "Gera"
 ```
 
 ## 🛠️ Ferramentas e Tecnologias
