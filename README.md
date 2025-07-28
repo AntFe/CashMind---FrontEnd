@@ -120,12 +120,6 @@ classDiagram
         +analyze_finances(transactions) AnalysisReport
     }
 
-    class TransactionType {
-        <<enumeration>>
-        INCOME
-        EXPENSE
-    }
-
     User "1" -- " *" Transaction : "Registra"
     User "1" -- " *" Budget : "Define"
     User "1" -- " *" Goal : "Possui"
