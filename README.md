@@ -177,7 +177,7 @@ classDiagram
 
 ### Frontend
 - **HTML5/CSS3/JavaScript**: Tecnologias base
-- **React** : Como framework para design das páginas
+- **React**: Como framework para design das páginas *(Planejado - Em migração)*
 - **Chart.js**: Gráficos e visualizações
 - **Fetch API**: Comunicação com backend
 - **JWT**: Autenticação no cliente
@@ -185,24 +185,29 @@ classDiagram
 ### Ferramentas de Build e Desenvolvimento
 - **pip**: Gerenciador de pacotes Python
 - **venv**: Ambientes virtuais Python
-- **npm** (opcional): Para gerenciar dependências frontend
+- **npm**: Gerenciador de pacotes JavaScript *(Planejado - Para React)*
+- **Webpack/Vite**: Bundler para React *(Planejado)*
 
 ### Testes
 - **pytest**: Framework de testes Python
 - **pytest-cov**: Cobertura de testes
-- **unittest**: Testes unitários nativos Python
+- **Jest**: Testes JavaScript/React *(Planejado)*
+- **React Testing Library**: Testes de componentes *(Planejado)*
 
 ### Documentação
-- **Sphinx**: Documentação Python
-- **JSDoc**: Documentação JavaScript
+- **Sphinx**: Documentação Python *(Planejado)*
+- **JSDoc**: Documentação JavaScript *(Planejado)*
+- **Storybook**: Documentação de componentes React *(Planejado)*
 - **Markdown**: Documentação geral
 
-### Container (Planejado)
+### Container *(Planejado)*
 - **Docker**: Containerização da aplicação
 - **Docker Compose**: Orquestração de containers
 
-### CI/CD (Planejado)
+### CI/CD *(Planejado)*
 - **GitHub Actions**: Integração e deploy contínuos
+- **Testes automatizados**: Pipeline de validação
+- **Deploy automático**: Para ambiente de produção
 
 ## 📚 Frameworks e Bibliotecas
 
@@ -231,16 +236,15 @@ Extensão para autenticação JWT que oferece:
 
 ### Frontend
 
-#### Chart.js
-Biblioteca de gráficos que permite:
-- Gráficos responsivos
-- Múltiplos tipos (linha, barra, pizza)
-- Animações suaves
-- Customização completa
+- **Chart.js**: Biblioteca de gráficos responsivos
+- **Fetch API**: Comunicação assíncrona com backend
+- **CSS Modular**: Arquitetura de estilos organizada
+- **React 18+**: Biblioteca para construção de UI *(Planejado)*
+- **React Router**: Navegação SPA *(Planejado)*
 
 ## 📖 Geração de Documentação
 
-### Documentação Python (Backend)
+### Documentação Python (Backend) *(Planejado)*
 
 1. Instalar Sphinx:
 ```bash
@@ -260,8 +264,9 @@ make html
 
 A documentação será gerada em `backend/docs/_build/html/`
 
-### Documentação JavaScript (Frontend)
+### Documentação JavaScript (Frontend) *(Planejado)*
 
+#### Para código atual (Vanilla JS):
 1. Instalar JSDoc:
 ```bash
 npm install -g jsdoc
@@ -275,7 +280,8 @@ npm install -g jsdoc
     "includePattern": ".+\\.js(doc|x)?$"
   },
   "opts": {
-    "destination": "./frontend/docs"
+    "destination": "./frontend/docs",
+    "recurse": true
   }
 }
 ```
@@ -285,12 +291,19 @@ npm install -g jsdoc
 jsdoc -c jsdoc.json
 ```
 
+#### Para React *(Futuro)*:
+```bash
+npm install --save-dev @storybook/react
+npx storybook init
+```
+
 ## 🚀 Como Executar o Sistema
 
 ### Pré-requisitos
 - Python 3.8 ou superior
 - pip (gerenciador de pacotes Python)
 - Git
+- Node.js 16+ *(Para futuras funcionalidades React)*
 
 ### 1. Clonar o Repositório
 ```bash
@@ -327,14 +340,15 @@ pip install -r requirements.txt
 Criar arquivo `.env` no diretório backend:
 ```env
 # Flask
-SECRET_KEY=dev-secret-key-cashmind-2024
+SECRET_KEY=sua-chave-secreta-flask-aqui
 FLASK_ENV=development
 
 # JWT
-JWT_SECRET_KEY=jwt-secret-cashmind-2024
+JWT_SECRET_KEY=sua-chave-secreta-jwt-aqui
 
 # Google Gemini API (opcional - para funcionalidade de IA)
-GOOGLE_API_KEY=sua-chave-api-aqui
+# Obtenha sua chave em: https://makersuite.google.com/app/apikey
+GOOGLE_API_KEY=sua-chave-api-gemini-aqui
 ```
 
 **Nota**: O banco de dados SQLite é configurado automaticamente em `instance/cashmind.db`
@@ -362,7 +376,7 @@ python3 -m http.server 8000
 
 Abra o navegador e acesse: `http://localhost:8000`
 
-## 🧪 Executar Testes
+## 🧪 Executar Testes *(Em Desenvolvimento)*
 
 ### Testes Backend
 ```bash
@@ -377,7 +391,13 @@ pytest --cov=app --cov-report=html
 
 A cobertura será gerada em `htmlcov/index.html`
 
-## 🐳 Docker (Em Desenvolvimento)
+### Testes Frontend *(Planejado)*
+```bash
+npm test
+npm run test:coverage
+```
+
+## 🐳 Docker *(Planejado)*
 
 ### Build da Imagem
 ```bash
@@ -399,19 +419,19 @@ CashMind/
 │   │   ├── models/
 │   │   ├── routes/
 │   │   └── services/
-│   ├── tests/
+│   ├── tests/           *(Em desenvolvimento)*
 │   ├── requirements.txt
+│   ├── .env.example
 │   └── run.py
 ├── frontend/
 │   ├── index.html
 │   ├── pages/
 │   ├── scripts/
 │   ├── styles/
-│   └── content/
-├── docs/
+│   ├── content/
 ├── .gitignore
 ├── README.md
-└── docker-compose.yml
+└── LICENSE
 ```
 
 ## 🤝 Contribuindo
@@ -424,7 +444,7 @@ CashMind/
 
 ## 📄 Licença
 
-Este projeto é parte de um trabalho acadêmico da UFES.
+Este projeto está licenciado sob a GNU General Public License v3.0. Veja o arquivo [LICENSE](LICENSE) para mais detalhes.
 
 ## 👥 Equipe
 
@@ -434,4 +454,4 @@ Este projeto é parte de um trabalho acadêmico da UFES.
 
 ---
 
-Desenvolvido com 💚 para a disciplina de Projeto Integrador - UFES
+Desenvolvido com 💚 para a disciplina de Projeto Integrado I - UFES
